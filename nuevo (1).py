@@ -40,7 +40,11 @@ HECHOS = [
     {
         "id": "H8",
         "descripcion": "El IMC clasifica a un adulto en peso bajo, normal, sobrepeso u obesidad.",
-        "categoria": "diagnostico_imc"
+        "categoria": "diagnostico_imc",
+        # Limites superiores (kg/m2): < 18.5 peso bajo, < 25 normal, < 30 sobrepeso, >= 30 obesidad
+        "valor": {"peso_bajo": 18.5, "normal": 25, "sobrepeso": 30},
+        "unidad": "kg/m2",
+        "fuente": "OMS"
     },
     {
         "id": "H9",
@@ -128,7 +132,7 @@ HECHOS = [
     }
 ]
 
-# Los hechos se consultan por id, su texto sirve para explicar y su "valor" para calcular
+# Los hechos se consultan por id: su texto sirve para explicar y su "valor" para calcular
 HECHO = {h["id"]: h for h in HECHOS}
 HECHOS_POR_ID = {h["id"]: h["descripcion"] for h in HECHOS}
 
@@ -138,41 +142,61 @@ def val(id_hecho):
     return HECHO[id_hecho]["valor"]
 
 
-# Las constantes viven en los hechos, no en las reglas.
-# Una regla solo se evalua si TODOS sus hechos de soporte existen en la base de hechos.
-# Dos reglas nunca deducen valores distintos para la misma variable (el motor lo verifica).
+def clasificar_imc(imc):
+    """Clasifica el IMC usando los limites guardados en el hecho H8."""
+    limites = val("H8")
+    if imc < limites["peso_bajo"]:
+        return "peso_bajo"
+    if imc < limites["normal"]:
+        return "normal"
+    if imc < limites["sobrepeso"]:
+        return "sobrepeso"
+    return "obesidad"
+
+
+NOMBRE_IMC = {
+    "peso_bajo": "Peso bajo",
+    "normal": "Peso normal",
+    "sobrepeso": "Sobrepeso",
+    "obesidad": "Obesidad",
+}
+
+
+# Principio: las constantes viven en los hechos, no en las reglas.
+# - Una regla solo se evalua si TODOS sus hechos de soporte existen en la base de hechos.
+# - Dos reglas nunca deducen valores distintos para la misma variable (el motor lo verifica).
 REGLAS = {
     # R1: objetivo de perdida de peso (la proteina la deciden R7 y R16)
     "R1": {
         "si": lambda m: m["objetivo"] == "bajar_peso",
-        "entonces": lambda m: {"factor_calorias": val("H17")["bajar_peso"]},
-        "hechos_soporte": ["H1", "H7", "H12", "H17"]
+        "entonces": lambda m: {"factor_calorias": val("H16")["bajar_peso"]},
+        "hechos_soporte": ["H1", "H6", "H11", "H16"]
     },
     # R2: objetivo de ganancia muscular
     "R2": {
         "si": lambda m: m["objetivo"] == "ganar_musculo",
         "entonces": lambda m: {
-            "factor_calorias": val("H17")["ganar_musculo"],
-            "proteina_g_kg": val("H11")["ganar_musculo"]
+            "factor_calorias": val("H16")["ganar_musculo"],
+            "proteina_g_kg": val("H10")["ganar_musculo"]
         },
-        "hechos_soporte": ["H5", "H7", "H11", "H17"]
+        "hechos_soporte": ["H4", "H6", "H10", "H16"]
     },
     # R3: objetivo de mantenimiento
     "R3": {
         "si": lambda m: m["objetivo"] == "mantenimiento",
         "entonces": lambda m: {
-            "factor_calorias": val("H17")["mantenimiento"],
-            "proteina_g_kg": val("H11")["mantenimiento"]
+            "factor_calorias": val("H16")["mantenimiento"],
+            "proteina_g_kg": val("H10")["mantenimiento"]
         },
-        "hechos_soporte": ["H2", "H7", "H16", "H11", "H17"]
+        "hechos_soporte": ["H2", "H6", "H15", "H10", "H16"]
     },
     # R4: nivel elevado de actividad fisica (su efecto numerico esta en R12 via factor_actividad)
     "R4": {
-        "si": lambda m: m["factor_actividad"] >= val("H22"),
+        "si": lambda m: m["factor_actividad"] >= val("H21"),
         "entonces": lambda m: {
             "aviso_R4": "Tu nivel de actividad fisica es alto: ya esta considerado en tu gasto energetico total."
         },
-        "hechos_soporte": ["H1", "H8", "H16", "H22"]
+        "hechos_soporte": ["H1", "H7", "H15", "H21"]
     },
     # R5: habitos alimenticios poco saludables
     "R5": {
@@ -180,22 +204,22 @@ REGLAS = {
         "entonces": lambda m: {
             "aviso_R5": "Procura mejorar la calidad de tu alimentacion: alimentos variados y de alto valor nutricional."
         },
-        "hechos_soporte": ["H2", "H6", "H10", "H15"]
+        "hechos_soporte": ["H2", "H5", "H9", "H14"]
     },
     # R6: consumo elevado de azucar -> tope de azucares libres
     "R6": {
         "si": lambda m: m.get("alto_consumo_azucar", False) and "calorias_objetivo" in m,
         "entonces": lambda m: {
-            "azucar_max_g": round(m["calorias_objetivo"] * val("H20") / val("H21")["carbos"]),
-            "aviso_R6": f"Limita los azucares libres y las bebidas azucaradas a menos del {val('H20') * 100:.0f} % de tus calorias."
+            "azucar_max_g": round(m["calorias_objetivo"] * val("H19") / val("H20")["carbos"]),
+            "aviso_R6": f"Limita los azucares libres y las bebidas azucaradas a menos del {val('H19') * 100:.0f} % de tus calorias."
         },
-        "hechos_soporte": ["H4", "H10", "H15", "H20", "H21"]
+        "hechos_soporte": ["H3", "H9", "H14", "H19", "H20"]
     },
     # R7: preservacion muscular durante la perdida de peso
     "R7": {
         "si": lambda m: m["objetivo"] == "bajar_peso" and m.get("preservar_musculo", True),
-        "entonces": lambda m: {"proteina_g_kg": val("H11")["bajar_peso_preservar"]},
-        "hechos_soporte": ["H5", "H7", "H11"]
+        "entonces": lambda m: {"proteina_g_kg": val("H10")["bajar_peso_preservar"]},
+        "hechos_soporte": ["H4", "H6", "H10"]
     },
     # R8: recomendaciones generales para el mantenimiento
     "R8": {
@@ -204,81 +228,108 @@ REGLAS = {
             "aviso_R8": "Mantener actividad fisica regular, incluir ejercicios de fortalecimiento muscular "
                         "y procurar una alimentacion equilibrada."
         },
-        "hechos_soporte": ["H2", "H13", "H14"]
+        "hechos_soporte": ["H2", "H12", "H13"]
     },
     # R9: distribucion de grasas
     "R9": {
         "si": lambda m: "calorias_objetivo" in m,
-        "entonces": lambda m: {"grasas_g": m["calorias_objetivo"] * val("H18") / val("H21")["grasas"]},
-        "hechos_soporte": ["H7", "H10", "H18", "H21"]
+        "entonces": lambda m: {"grasas_g": m["calorias_objetivo"] * val("H17") / val("H20")["grasas"]},
+        "hechos_soporte": ["H6", "H9", "H17", "H20"]
     },
     # R10: distribucion de carbohidratos (calorias restantes)
     "R10": {
         "si": lambda m: all(k in m for k in ("calorias_objetivo", "proteina_g", "grasas_g")),
         "entonces": lambda m: {
             "carbos_g": (m["calorias_objetivo"]
-                         - val("H21")["proteina"] * m["proteina_g"]
-                         - val("H21")["grasas"] * m["grasas_g"]) / val("H21")["carbos"]
+                         - val("H20")["proteina"] * m["proteina_g"]
+                         - val("H20")["grasas"] * m["grasas_g"]) / val("H20")["carbos"]
         },
-        "hechos_soporte": ["H7", "H21"]
+        "hechos_soporte": ["H6", "H20"]
     },
-    # R11: tasa metabolica basal (Mifflin-St Jeor, coeficientes en H8)
+    # R11: tasa metabolica basal (Mifflin-St Jeor, coeficientes en H7)
     "R11": {
         "si": lambda m: all(k in m for k in ("peso", "estatura", "edad", "sexo")),
         "entonces": lambda m: {
-            "tmb": val("H8")["peso"] * m["peso"] + val("H8")["estatura"] * m["estatura"]
-                   + val("H8")["edad"] * m["edad"] + val("H8")["sexo"][m["sexo"]]
+            "tmb": val("H7")["peso"] * m["peso"] + val("H7")["estatura"] * m["estatura"]
+                   + val("H7")["edad"] * m["edad"] + val("H7")["sexo"][m["sexo"]]
         },
-        "hechos_soporte": ["H8"]
+        "hechos_soporte": ["H7"]
     },
     # R12: gasto energetico total
     "R12": {
         "si": lambda m: "tmb" in m and "factor_actividad" in m,
         "entonces": lambda m: {"get": m["tmb"] * m["factor_actividad"]},
-        "hechos_soporte": ["H16"]
+        "hechos_soporte": ["H15"]
     },
     # R13: calorias objetivo
     "R13": {
         "si": lambda m: "get" in m and "factor_calorias" in m,
         "entonces": lambda m: {"calorias_objetivo": m["get"] + m["factor_calorias"]},
-        "hechos_soporte": ["H7", "H12"]
+        "hechos_soporte": ["H6", "H11"]
     },
     # R14: gramos de proteina
     "R14": {
         "si": lambda m: "peso" in m and "proteina_g_kg" in m,
         "entonces": lambda m: {"proteina_g": m["proteina_g_kg"] * m["peso"]},
-        "hechos_soporte": ["H5", "H11"]
+        "hechos_soporte": ["H4", "H10"]
     },
     # R15: porcentaje de carbohidratos
     "R15": {
         "si": lambda m: "carbos_g" in m and "calorias_objetivo" in m,
         "entonces": lambda m: {
-            "pct_carbos": round(m["carbos_g"] * val("H21")["carbos"] / m["calorias_objetivo"] * 100, 1),
+            "pct_carbos": round(m["carbos_g"] * val("H20")["carbos"] / m["calorias_objetivo"] * 100, 1),
             "conclusion": "Dieta inicial generada"
         },
-        "hechos_soporte": ["H7", "H2", "H21"]
+        "hechos_soporte": ["H6", "H2", "H20"]
     },
     # R16: perdida de peso sin interes en preservar musculo (excluyente con R7)
     "R16": {
         "si": lambda m: m["objetivo"] == "bajar_peso" and not m.get("preservar_musculo", True),
-        "entonces": lambda m: {"proteina_g_kg": val("H11")["bajar_peso"]},
-        "hechos_soporte": ["H5", "H7", "H11"]
+        "entonces": lambda m: {"proteina_g_kg": val("H10")["bajar_peso"]},
+        "hechos_soporte": ["H4", "H6", "H10"]
     },
     # R17: advertencia si las calorias objetivo quedan por debajo del minimo segun el sexo
     "R17": {
-        "si": lambda m: "calorias_objetivo" in m and m["calorias_objetivo"] < val("H19")[m["sexo"]],
+        "si": lambda m: "calorias_objetivo" in m and m["calorias_objetivo"] < val("H18")[m["sexo"]],
         "entonces": lambda m: {
             "advertencia_R17": f"Tus calorias objetivo ({m['calorias_objetivo']:.0f} kcal) estan por debajo del minimo "
-                               f"recomendado de {val('H19')[m['sexo']]} kcal/dia. Esta recomendacion no es adecuada "
+                               f"recomendado de {val('H18')[m['sexo']]} kcal/dia. Esta recomendacion no es adecuada "
                                f"para seguirse sin supervision: consulta a un nutriologo o medico."
         },
-        "hechos_soporte": ["H7", "H19"]
+        "hechos_soporte": ["H6", "H18"]
+    },
+    # R18: calculo y diagnostico del IMC (estatura en cm, limites en H8)
+    "R18": {
+        "si": lambda m: "peso" in m and "estatura" in m,
+        "entonces": lambda m: {
+            "imc": round(m["peso"] / (m["estatura"] / 100) ** 2, 1),
+            "diagnostico_imc": clasificar_imc(m["peso"] / (m["estatura"] / 100) ** 2)
+        },
+        "hechos_soporte": ["H8"]
+    },
+    # R19: advertencia si la persona ya tiene peso bajo y su objetivo es bajar de peso
+    "R19": {
+        "si": lambda m: m.get("diagnostico_imc") == "peso_bajo" and m["objetivo"] == "bajar_peso",
+        "entonces": lambda m: {
+            "advertencia_R19": f"Tu IMC ({m['imc']}) indica peso bajo y tu objetivo es bajar de peso. "
+                               f"Esta meta no es recomendable: consulta a un nutriologo o medico."
+        },
+        "hechos_soporte": ["H6", "H8"]
+    },
+    # R20: aviso informativo para sobrepeso u obesidad
+    "R20": {
+        "si": lambda m: m.get("diagnostico_imc") in ("sobrepeso", "obesidad") and m["objetivo"] == "ganar_musculo",
+        "entonces": lambda m: {
+            "aviso_R20": f"Tu IMC ({m['imc']}) indica {NOMBRE_IMC[m['diagnostico_imc']].lower()}: "
+                         f"cuida que el superavit calorico se mantenga moderado."
+        },
+        "hechos_soporte": ["H8", "H11"]
     },
 }
 
 
 def motor_inferencia(caso):
-    """Encadenamiento hacia adelante: dispara cada regla una sola vez hasta no deducir nada nuevo"""
+    """Encadenamiento hacia adelante: dispara cada regla una sola vez hasta no deducir nada nuevo."""
     datos = dict(caso)
     reglas = set()
     traza = []
@@ -290,12 +341,10 @@ def motor_inferencia(caso):
         ciclo += 1
         for id_r, regla in REGLAS.items():
             if id_r in reglas:
-                continu
-                e
-            # Los hechos se respetan, sin alguno de sus hechos de soporte la regla no puede usarse
+                continue
+            # Los hechos se respetan: sin alguno de sus hechos de soporte la regla no puede usarse
             if not all(h in HECHO for h in regla["hechos_soporte"]):
                 continue
-            
             if regla["si"](datos):
                 derivados = regla["entonces"](datos)
                 # Deteccion de conflictos: dos reglas no pueden deducir valores distintos para lo mismo
@@ -309,10 +358,10 @@ def motor_inferencia(caso):
 
     return datos, traza
 
-# intervalos para los datos numericos asi como las multiples opciones
+# intervalos para los datos numericos
 INTERVALOS = {
-    "edad": (18, 65, "años"),
-    "peso": (30, 250, "kg"),
+    "edad":     (18, 65, "años"),
+    "peso":     (30, 250, "kg"),
     "estatura": (120, 230, "cm"),
 }
 
@@ -328,12 +377,13 @@ OPCIONES_OBJETIVO = {
 }
 
 OPCIONES_ACTIVIDAD = {
-    "1": (1.2, "Sedentario (poco o nada de ejercicio)"),
+    "1": (1.2,   "Sedentario (poco o nada de ejercicio)"),
     "2": (1.375, "Ligera (1-3 días por semana)"),
-    "3": (1.55, "Moderada (3-5 días por semana)"),
+    "3": (1.55,  "Moderada (3-5 días por semana)"),
     "4": (1.725, "Intensa (6-7 días por semana)"),
-    "5": (1.9, "Muy intensa (entrenamiento doble o trabajo fisico pesado)"),
+    "5": (1.9,   "Muy intensa (entrenamiento doble o trabajo físico pesado)"),
 }
+
 
 def pedir_numero(nombre):
     """Pide un numero y lo repite hasta que este dentro del intervalo."""
@@ -372,7 +422,7 @@ def pedir_si_no(pregunta):
             return False
         print("  Responde con 's' o 'n'.")
 
-# funcion para introducir los datos del caso, realizando preguntas relacionadas al usuario para introducir valores
+
 def capturar_caso():
     print("=== Datos del caso ===")
     caso = {
@@ -391,21 +441,22 @@ def capturar_caso():
         caso["preservar_musculo"] = pedir_si_no("¿Quieres preservar tu masa muscular?")
     return caso
 
-# se le da formato mediante una funcion
+
 def _fmt(v):
     return round(v, 1) if isinstance(v, float) else v
 
 
 def mostrar_resultado(datos, traza):
     kcal = datos["calorias_objetivo"]
-    e = val("H21")
+    e = val("H20")
     prot, gras, carb = datos["proteina_g"], datos["grasas_g"], datos["carbos_g"]
 
     print("\n=== Recomendación inicial ===")
+    print(f"IMC: {datos['imc']} ({NOMBRE_IMC[datos['diagnostico_imc']]})")
     print(f"Metabolismo basal: {datos['tmb']:.0f} kcal | Gasto energético total: {datos['get']:.0f} kcal")
     print(f"Calorías objetivo: {kcal:.0f} kcal/día")
-    print(f"  Proteínas:     {prot:.0f} g ({prot * e["proteina"] / kcal * 100:.0f} %)")
-    print(f"  Grasas:        {gras:.0f} g ({gras * e["grasas"] / kcal * 100:.0f} %)")
+    print(f"  Proteínas:     {prot:.0f} g ({prot * e['proteina'] / kcal * 100:.0f} %)")
+    print(f"  Grasas:        {gras:.0f} g ({gras * e['grasas'] / kcal * 100:.0f} %)")
     print(f"  Carbohidratos: {carb:.0f} g ({datos['pct_carbos']:.0f} %)")
     if "azucar_max_g" in datos:
         print(f"  Azúcares libres: máximo {datos['azucar_max_g']} g")
