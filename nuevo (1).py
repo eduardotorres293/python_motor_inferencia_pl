@@ -41,7 +41,6 @@ HECHOS = [
         "id": "H8",
         "descripcion": "El IMC clasifica a un adulto en peso bajo, normal, sobrepeso u obesidad.",
         "categoria": "diagnostico_imc",
-        # Limites superiores (kg/m2): < 18.5 peso bajo, < 25 normal, < 30 sobrepeso, >= 30 obesidad
         "valor": {"peso_bajo": 18.5, "normal": 25, "sobrepeso": 30},
         "unidad": "kg/m2",
         "fuente": "OMS"
@@ -132,18 +131,13 @@ HECHOS = [
     }
 ]
 
-# Los hechos se consultan por id: su texto sirve para explicar y su "valor" para calcular
 HECHO = {h["id"]: h for h in HECHOS}
 HECHOS_POR_ID = {h["id"]: h["descripcion"] for h in HECHOS}
 
-
 def val(id_hecho):
-    """Valor numerico (o tabla de valores) guardado en un hecho."""
     return HECHO[id_hecho]["valor"]
 
-
 def clasificar_imc(imc):
-    """Clasifica el IMC usando los limites guardados en el hecho H8."""
     limites = val("H8")
     if imc < limites["peso_bajo"]:
         return "peso_bajo"
@@ -161,10 +155,6 @@ NOMBRE_IMC = {
     "obesidad": "Obesidad",
 }
 
-
-# Principio: las constantes viven en los hechos, no en las reglas.
-# - Una regla solo se evalua si TODOS sus hechos de soporte existen en la base de hechos.
-# - Dos reglas nunca deducen valores distintos para la misma variable (el motor lo verifica).
 REGLAS = {
     # R1: objetivo de perdida de peso (la proteina la deciden R7 y R16)
     "R1": {
@@ -327,9 +317,8 @@ REGLAS = {
     },
 }
 
-
+# motor de inferencia, recibe los datos del caso y verifica con los hechos para obtener un resultado
 def motor_inferencia(caso):
-    """Encadenamiento hacia adelante: dispara cada regla una sola vez hasta no deducir nada nuevo."""
     datos = dict(caso)
     reglas = set()
     traza = []
@@ -342,12 +331,10 @@ def motor_inferencia(caso):
         for id_r, regla in REGLAS.items():
             if id_r in reglas:
                 continue
-            # Los hechos se respetan: sin alguno de sus hechos de soporte la regla no puede usarse
             if not all(h in HECHO for h in regla["hechos_soporte"]):
                 continue
             if regla["si"](datos):
                 derivados = regla["entonces"](datos)
-                # Deteccion de conflictos: dos reglas no pueden deducir valores distintos para lo mismo
                 for k, v in derivados.items():
                     if k in datos and datos[k] != v:
                         raise ValueError(f"Conflicto: {id_r} intenta cambiar '{k}' de {datos[k]} a {v}")
@@ -384,9 +371,7 @@ OPCIONES_ACTIVIDAD = {
     "5": (1.9,   "Muy intensa (entrenamiento doble o trabajo físico pesado)"),
 }
 
-
 def pedir_numero(nombre):
-    """Pide un numero y lo repite hasta que este dentro del intervalo."""
     minimo, maximo, unidad = INTERVALOS[nombre]
     while True:
         texto = input(f"{nombre.capitalize()} ({minimo}-{maximo} {unidad}): ").strip()
@@ -399,9 +384,7 @@ def pedir_numero(nombre):
             return int(valor) if valor.is_integer() else valor
         print(f"  El valor debe estar entre {minimo} y {maximo} {unidad}.")
 
-
 def pedir_opcion(titulo, opciones):
-    """Muestra un menu y regresa el valor interno de la opcion elegida."""
     print(f"\n{titulo}")
     for clave, (_, texto) in opciones.items():
         print(f"  {clave}) {texto}")
@@ -411,9 +394,7 @@ def pedir_opcion(titulo, opciones):
             return opciones[eleccion][0]
         print(f"  Opción inválida. Elige entre {', '.join(opciones)}.")
 
-
 def pedir_si_no(pregunta):
-    """Pregunta de si/no. Regresa True o False."""
     while True:
         r = input(f"{pregunta} (s/n): ").strip().lower()
         if r in ("s", "si", "sí"):
@@ -422,7 +403,7 @@ def pedir_si_no(pregunta):
             return False
         print("  Responde con 's' o 'n'.")
 
-
+# se obtienen los datos introducidos por el usuario para su uso
 def capturar_caso():
     print("=== Datos del caso ===")
     caso = {
@@ -441,11 +422,11 @@ def capturar_caso():
         caso["preservar_musculo"] = pedir_si_no("¿Quieres preservar tu masa muscular?")
     return caso
 
-
+# para dar un formato a los datos
 def _fmt(v):
     return round(v, 1) if isinstance(v, float) else v
 
-
+# funcion para mostrar los resultados y multiples datos finales
 def mostrar_resultado(datos, traza):
     kcal = datos["calorias_objetivo"]
     e = val("H20")
@@ -473,7 +454,7 @@ def mostrar_resultado(datos, traza):
         for a in avisos:
             print(f"  - {a}")
 
-    print("\n=== Explicación (reglas aplicadas) ===")
+    print("\n\n\n=== Explicación (reglas aplicadas) ===")
     for ciclo, id_r, derivados, soporte in traza:
         resumen = ", ".join(f"{k}={_fmt(v)}" for k, v in derivados.items() if not k.startswith(("aviso_", "advertencia_")))
         print(f"[Ciclo {ciclo}] {id_r}" + (f": {resumen}" if resumen else " (aviso)"))
