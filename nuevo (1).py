@@ -2,37 +2,37 @@
 HECHOS = [
     {
         "id": "H1",
-        "descripcion": "La actividad física incrementa el gasto energético de una persona.",
+        "descripcion": "La actividad fisica incrementa el gasto energetico de una persona.",
         "categoria": "gasto_energetico"
     },
     {
         "id": "H2",
-        "descripcion": "Una alimentación saludable se basa en 4 principios: adecuación, equilibrio, moderación y diversidad.",
+        "descripcion": "Una alimentacion saludable se basa en 4 principios: adecuacion, equilibrio, moderacion y diversidad.",
         "categoria": "principios_nutricion"
     },
     {
         "id": "H3",
-        "descripcion": "El exceso de azúcares puede aumentar el riesgo de problemas de salud.",
+        "descripcion": "El exceso de azucares puede aumentar el riesgo de problemas de salud.",
         "categoria": "riesgo_salud"
     },
     {
         "id": "H4",
-        "descripcion": "El consumo adecuado de proteínas contribuye al mantenimiento y desarrollo de la masa muscular.",
+        "descripcion": "El consumo adecuado de proteinas contribuye al mantenimiento y desarrollo de la masa muscular.",
         "categoria": "macronutrientes"
     },
     {
         "id": "H5",
-        "descripcion": "El consumo de frutas y verduras forma parte de una alimentación saludable.",
+        "descripcion": "El consumo de frutas y verduras forma parte de una alimentacion saludable.",
         "categoria": "alimentos_recomendados"
     },
     {
         "id": "H6",
-        "descripcion": "Una alimentación adecuada debe proporcionar la energía y nutrientes que necesita la persona.",
+        "descripcion": "Una alimentacion adecuada debe proporcionar la energia y nutrientes que necesita la persona.",
         "categoria": "requerimiento_diario"
     },
     {
         "id": "H7",
-        "descripcion": "Las calorías que el cuerpo gasta en reposo se estiman con edad, peso, estatura y sexo.",
+        "descripcion": "Las calorias que el cuerpo gasta en reposo se estiman con edad, peso, estatura y sexo.",
         "categoria": "metabolismo_basal",
         "valor": {"peso": 10, "estatura": 6.25, "edad": -5, "sexo": {"M": 5, "F": -161}},
         "fuente": "F7"
@@ -47,12 +47,12 @@ HECHOS = [
     },
     {
         "id": "H9",
-        "descripcion": "Una alimentación saludable debe tener bajo contenido de grasas no saludables, azúcares libres y sodio.",
+        "descripcion": "Una alimentacion saludable debe tener bajo contenido de grasas no saludables, azucares libres y sodio.",
         "categoria": "restricciones"
     },
     {
         "id": "H10",
-        "descripcion": "Las necesidades de proteína pueden aumentar según el nivel de actividad física y los objetivos relacionados con el desarrollo o mantenimiento muscular.",
+        "descripcion": "Las necesidades de proteina pueden aumentar segun el nivel de actividad fisica y los objetivos relacionados con el desarrollo o mantenimiento muscular.",
         "categoria": "hipertrofia",
         "valor": {"bajar_peso_preservar": 2.2, "bajar_peso": 2.0, "ganar_musculo": 2.2, "mantenimiento": 1.6},
         "unidad": "g de proteina por kg de peso",
@@ -60,17 +60,17 @@ HECHOS = [
     },
     {
         "id": "H11",
-        "descripcion": "Un desequilibrio energético sostenido es uno de los factores que puede contribuir al sobrepeso y la obesidad.",
+        "descripcion": "Un desequilibrio energetico sostenido es uno de los factores que puede contribuir al sobrepeso y la obesidad.",
         "categoria": "balance_energetico"
     },
     {
         "id": "H12",
-        "descripcion": "Los adultos deben hacer actividad física moderada cada semana y ejercicios de fuerza.",
+        "descripcion": "Los adultos deben hacer actividad fisica moderada cada semana y ejercicios de fuerza.",
         "categoria": "actividad_fisica"
     },
     {
         "id": "H13",
-        "descripcion": "Cualquier actividad física es mejor que el sedentarismo.",
+        "descripcion": "Cualquier actividad fisica es mejor que el sedentarismo.",
         "categoria": "actividad_fisica"
     },
     {
@@ -80,12 +80,12 @@ HECHOS = [
     },
     {
         "id": "H15",
-        "descripcion": "El gasto energético total considera el gasto en reposo y la energía utilizada durante las actividades físicas.",
+        "descripcion": "El gasto energetico total considera el gasto en reposo y la energia utilizada durante las actividades fisicas.",
         "categoria": "gasto_energetico"
     },
     {
         "id": "H16",
-        "descripcion": "Para perder grasa se requiere un déficit calórico y para ganar masa muscular un superávit calórico; en mantenimiento el ajuste es cero.",
+        "descripcion": "Para perder grasa se requiere un deficit calorico y para ganar masa muscular un superavit calorico. En mantenimiento el ajuste es cero.",
         "categoria": "balance_energetico",
         "valor": {"bajar_peso": -500, "ganar_musculo": 300, "mantenimiento": 0},
         "unidad": "kcal/dia",
@@ -93,7 +93,7 @@ HECHOS = [
     },
     {
         "id": "H17",
-        "descripcion": "Las grasas deben aportar entre el 20 % y el 35 % de la energía; se propone el 25 %.",
+        "descripcion": "Las grasas deben aportar entre el 20 % y el 35 % de la energia. sS propone el 25 %.",
         "categoria": "macronutrientes",
         "valor": 0.25,
         "rango": (0.20, 0.35),
@@ -101,7 +101,7 @@ HECHOS = [
     },
     {
         "id": "H18",
-        "descripcion": "Las calorías diarias no deberían bajar de un mínimo según el sexo.",
+        "descripcion": "Las calorias diarias no deberian bajar de un minimo segun el sexo.",
         "categoria": "seguridad",
         "valor": {"F": 1200, "M": 1500},
         "unidad": "kcal/dia",
@@ -109,14 +109,14 @@ HECHOS = [
     },
     {
         "id": "H19",
-        "descripcion": "Los azúcares libres deben aportar menos del 10 % de la energía total.",
+        "descripcion": "Los azucares libres deben aportar menos del 10 % de la energia total.",
         "categoria": "restricciones",
         "valor": 0.10,
         "fuente": "F1"
     },
     {
         "id": "H20",
-        "descripcion": "Las proteínas y los carbohidratos aportan 4 kcal por gramo y las grasas 9 kcal por gramo.",
+        "descripcion": "Las proteinas y los carbohidratos aportan 4 kcal por gramo y las grasas 9 kcal por gramo.",
         "categoria": "macronutrientes",
         "valor": {"proteina": 4, "carbos": 4, "grasas": 9},
         "unidad": "kcal/g",
@@ -124,7 +124,7 @@ HECHOS = [
     },
     {
         "id": "H21",
-        "descripcion": "Un factor de actividad de 1.55 o mayor (actividad moderada o más) se considera nivel de actividad alto.",
+        "descripcion": "Un factor de actividad de 1.55 o mayor (actividad moderada o mas) se considera nivel de actividad alto.",
         "categoria": "actividad_fisica",
         "valor": 1.55,
         "fuente": "criterio del equipo"
@@ -184,7 +184,7 @@ REGLAS = {
     "R4": {
         "si": lambda m: m["factor_actividad"] >= val("H21"),
         "entonces": lambda m: {
-            "aviso_R4": "Tu nivel de actividad fisica es alto: ya esta considerado en tu gasto energetico total."
+            "aviso_R4": "Tu nivel de actividad fisica es alto, este valor ya es considerado en el gasto energetico total."
         },
         "hechos_soporte": ["H1", "H7", "H15", "H21"]
     },
@@ -192,7 +192,7 @@ REGLAS = {
     "R5": {
         "si": lambda m: m.get("habitos_inadecuados", False),
         "entonces": lambda m: {
-            "aviso_R5": "Procura mejorar la calidad de tu alimentacion: alimentos variados y de alto valor nutricional."
+            "aviso_R5": "Procura mejorar la calidad de tu alimentacion, se recomiendan alimentos variados y de alto valor nutricional."
         },
         "hechos_soporte": ["H2", "H5", "H9", "H14"]
     },
@@ -282,8 +282,8 @@ REGLAS = {
     "R17": {
         "si": lambda m: "calorias_objetivo" in m and m["calorias_objetivo"] < val("H18")[m["sexo"]],
         "entonces": lambda m: {
-            "advertencia_R17": f"Tus calorias objetivo ({m['calorias_objetivo']:.0f} kcal) estan por debajo del minimo "
-                               f"recomendado de {val('H18')[m['sexo']]} kcal/dia. Esta recomendacion no es adecuada "
+            "advertencia_R17": f"Tus calorias objetivo ({m['calorias_objetivo']:.0f} kcal) estan por debajo del minimo"
+                               f"recomendado de {val('H18')[m['sexo']]} kcal/dia. Esta recomendacion no es adecuada"
                                f"para seguirse sin supervision: consulta a un nutriologo o medico."
         },
         "hechos_soporte": ["H6", "H18"]
@@ -301,8 +301,8 @@ REGLAS = {
     "R19": {
         "si": lambda m: m.get("diagnostico_imc") == "peso_bajo" and m["objetivo"] == "bajar_peso",
         "entonces": lambda m: {
-            "advertencia_R19": f"Tu IMC ({m['imc']}) indica peso bajo y tu objetivo es bajar de peso. "
-                               f"Esta meta no es recomendable: consulta a un nutriologo o medico."
+            "advertencia_R19": f"Tu IMC ({m['imc']}) indica peso bajo y tu objetivo es bajar de peso."
+                               f"Esta meta no es recomendable, consulta a un nutriologo o medico."
         },
         "hechos_soporte": ["H6", "H8"]
     },
@@ -310,8 +310,7 @@ REGLAS = {
     "R20": {
         "si": lambda m: m.get("diagnostico_imc") in ("sobrepeso", "obesidad") and m["objetivo"] == "ganar_musculo",
         "entonces": lambda m: {
-            "aviso_R20": f"Tu IMC ({m['imc']}) indica {NOMBRE_IMC[m['diagnostico_imc']].lower()}: "
-                         f"cuida que el superavit calorico se mantenga moderado."
+            "aviso_R20": f"Tu IMC ({m['imc']}) indica {NOMBRE_IMC[m['diagnostico_imc']].lower()}, cuida que el superavit calorico se mantenga moderado."
         },
         "hechos_soporte": ["H8", "H11"]
     },
@@ -337,7 +336,7 @@ def motor_inferencia(caso):
                 derivados = regla["entonces"](datos)
                 for k, v in derivados.items():
                     if k in datos and datos[k] != v:
-                        raise ValueError(f"Conflicto: {id_r} intenta cambiar '{k}' de {datos[k]} a {v}")
+                        raise ValueError(f"Error de valor, {id_r} intenta cambiar '{k}' de {datos[k]} a {v}")
                 datos.update(derivados)
                 reglas.add(id_r)
                 traza.append((ciclo, id_r, derivados, regla["hechos_soporte"]))
@@ -365,10 +364,10 @@ OPCIONES_OBJETIVO = {
 
 OPCIONES_ACTIVIDAD = {
     "1": (1.2,   "Sedentario (poco o nada de ejercicio)"),
-    "2": (1.375, "Ligera (1-3 días por semana)"),
-    "3": (1.55,  "Moderada (3-5 días por semana)"),
-    "4": (1.725, "Intensa (6-7 días por semana)"),
-    "5": (1.9,   "Muy intensa (entrenamiento doble o trabajo físico pesado)"),
+    "2": (1.375, "Ligera (1-3 dias por semana)"),
+    "3": (1.55,  "Moderada (3-5 dias por semana)"),
+    "4": (1.725, "Intensa (6-7 dias por semana)"),
+    "5": (1.9,   "Muy intensa (entrenamiento doble o trabajo fisico pesado)"),
 }
 
 def pedir_numero(nombre):
@@ -378,7 +377,7 @@ def pedir_numero(nombre):
         try:
             valor = float(texto)
         except ValueError:
-            print("  Escribe un número válido.")
+            print("  Escribe un numero valido.")
             continue
         if minimo <= valor <= maximo:
             return int(valor) if valor.is_integer() else valor
@@ -389,15 +388,15 @@ def pedir_opcion(titulo, opciones):
     for clave, (_, texto) in opciones.items():
         print(f"  {clave}) {texto}")
     while True:
-        eleccion = input("Elige una opción: ").strip()
+        eleccion = input("Elige una opcion: ").strip()
         if eleccion in opciones:
             return opciones[eleccion][0]
-        print(f"  Opción inválida. Elige entre {', '.join(opciones)}.")
+        print(f"  Opcion invalida. Elige entre {', '.join(opciones)}.")
 
 def pedir_si_no(pregunta):
     while True:
         r = input(f"{pregunta} (s/n): ").strip().lower()
-        if r in ("s", "si", "sí"):
+        if r in ("s", "si", "si"):
             return True
         if r in ("n", "no"):
             return False
@@ -412,12 +411,12 @@ def capturar_caso():
         "estatura": pedir_numero("estatura"),
     }
     caso["sexo"] = pedir_opcion("Sexo:", OPCIONES_SEXO)
-    caso["factor_actividad"] = pedir_opcion("Nivel de actividad física:", OPCIONES_ACTIVIDAD)
+    caso["factor_actividad"] = pedir_opcion("Nivel de actividad fisica:", OPCIONES_ACTIVIDAD)
     caso["objetivo"] = pedir_opcion("Objetivo:", OPCIONES_OBJETIVO)
 
     print()
-    caso["habitos_inadecuados"] = pedir_si_no("¿Tienes hábitos alimenticios poco saludables?")
-    caso["alto_consumo_azucar"] = pedir_si_no("¿Consumes azúcar en exceso?")
+    caso["habitos_inadecuados"] = pedir_si_no("¿Tienes habitos alimenticios poco saludables?")
+    caso["alto_consumo_azucar"] = pedir_si_no("¿Consumes azucar en exceso?")
     if caso["objetivo"] == "bajar_peso":
         caso["preservar_musculo"] = pedir_si_no("¿Quieres preservar tu masa muscular?")
     return caso
@@ -432,15 +431,16 @@ def mostrar_resultado(datos, traza):
     e = val("H20")
     prot, gras, carb = datos["proteina_g"], datos["grasas_g"], datos["carbos_g"]
 
-    print("\n=== Recomendación inicial ===")
+    print("\n=== Recomendacion inicial ===")
     print(f"IMC: {datos['imc']} ({NOMBRE_IMC[datos['diagnostico_imc']]})")
-    print(f"Metabolismo basal: {datos['tmb']:.0f} kcal | Gasto energético total: {datos['get']:.0f} kcal")
-    print(f"Calorías objetivo: {kcal:.0f} kcal/día")
-    print(f"  Proteínas:     {prot:.0f} g ({prot * e['proteina'] / kcal * 100:.0f} %)")
+    print(f"Metabolismo basal: {datos['tmb']:.0f} kcal")
+    print(f"Gasto energetico total: {datos['get']:.0f} kcal")
+    print(f"Calorias objetivo: {kcal:.0f} kcal/dia")
+    print(f"  Proteinas:     {prot:.0f} g ({prot * e['proteina'] / kcal * 100:.0f} %)")
     print(f"  Grasas:        {gras:.0f} g ({gras * e['grasas'] / kcal * 100:.0f} %)")
     print(f"  Carbohidratos: {carb:.0f} g ({datos['pct_carbos']:.0f} %)")
     if "azucar_max_g" in datos:
-        print(f"  Azúcares libres: máximo {datos['azucar_max_g']} g")
+        print(f"  Azucares libres: maximo {datos['azucar_max_g']} g")
 
     advertencias = [v for k, v in datos.items() if k.startswith("advertencia_")]
     if advertencias:
@@ -454,7 +454,7 @@ def mostrar_resultado(datos, traza):
         for a in avisos:
             print(f"  - {a}")
 
-    print("\n\n\n=== Explicación (reglas aplicadas) ===")
+    print("\n\n\n=== Explicacion y reglas aplicadas ===")
     for ciclo, id_r, derivados, soporte in traza:
         resumen = ", ".join(f"{k}={_fmt(v)}" for k, v in derivados.items() if not k.startswith(("aviso_", "advertencia_")))
         print(f"[Ciclo {ciclo}] {id_r}" + (f": {resumen}" if resumen else " (aviso)"))
